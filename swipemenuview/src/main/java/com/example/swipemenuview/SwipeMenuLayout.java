@@ -14,6 +14,7 @@ import android.widget.FrameLayout;
  * Created by louiewh on 16/6/16.
  */
 public class SwipeMenuLayout extends FrameLayout {
+    final static String TAG = "SwipeMenuLayout";
 
     private View mLeftMenuView;
     private View mRightMenuView;
@@ -143,11 +144,6 @@ public class SwipeMenuLayout extends FrameLayout {
         return mPosition;
     }
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        return super.dispatchTouchEvent(ev);
-    }
-
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -164,6 +160,7 @@ public class SwipeMenuLayout extends FrameLayout {
                 if(mSlideView != null && this != mSlideView && mSlideView.isMenuOpen())
                     mSlideView.closeMenu();
 
+                Log.d(TAG, "Event ACTION_DOWN! mMenuShow:" + mMenuShow);
                 super.onTouchEvent(event);
                 return true;
             case MotionEvent.ACTION_MOVE:
@@ -192,10 +189,7 @@ public class SwipeMenuLayout extends FrameLayout {
                 mContextView.layout(dx, 0, mContextView.getMeasuredWidth()+dx, mContextView.getMeasuredHeight());
                 return super.onTouchEvent(event);
             case MotionEvent.ACTION_CANCEL:
-                Log.d("louie", "Event ACTION_CANCEL!");
-                if(mSlideView != null && this != mSlideView && mSlideView.isMenuOpen())
-                    mSlideView.closeMenu();
-                return true;
+                Log.d(TAG, "Event ACTION_CANCEL! mMenuShow:" + mMenuShow);
             case MotionEvent.ACTION_UP:
                 int dis = mContextView.getLeft();
                 /**
@@ -223,6 +217,7 @@ public class SwipeMenuLayout extends FrameLayout {
                 }
 
                 mDownX = 0;
+                Log.d(TAG, "Event ACTION_UP! mMenuShow:" + mMenuShow);
                 return super.onTouchEvent(event);
             default:
                 return super.onTouchEvent(event);
