@@ -104,12 +104,6 @@ public class ListViewActivity extends AppCompatActivity implements SwipeMenuLayo
                 iv_icon = (ImageView) view.findViewById(R.id.iv_icon);
                 tv_name = (TextView) view.findViewById(R.id.tv_name);
 
-//                View leftMenu = view.findViewById(R.id.swipe_left_menu);
-//
-//                ((SwipeMenuLayout)view).setLeftMenuView(leftMenu);
-//                ((SwipeMenuLayout)view).setContextView(view.findViewById(R.id.swipe_context));
-//                ((SwipeMenuLayout)view).setRightMenuView(view.findViewById(R.id.swipe_right_menu));
-
                 view.setTag(this);
             }
         }

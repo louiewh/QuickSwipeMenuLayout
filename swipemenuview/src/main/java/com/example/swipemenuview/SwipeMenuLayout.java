@@ -140,18 +140,6 @@ public class SwipeMenuLayout extends FrameLayout {
         mMenuShow = false;
     }
 
-    public void setLeftMenuView(View view) {
-        this.mLeftMenuView = view;
-    }
-
-    public void setRightMenuView(View view) {
-        this.mRightMenuView = view;
-    }
-
-    public void setContextView(View view) {
-        this.mContextView = view;
-    }
-
     public void setOnMenuClickListener(OnMenuClickListener  listener) {
        mOnMenuClickListener = listener;
     }
