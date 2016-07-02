@@ -85,10 +85,30 @@ public class SwipeMenuLayout extends FrameLayout {
 
         if(mLeftMenuView == null && mLeftMenuViewId != View.NO_ID) {
             mLeftMenuView = this.findViewById(mLeftMenuViewId);
+
+            if(mLeftMenuView != null) {
+                mLeftMenuView.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mOnMenuClickListener != null)
+                            mOnMenuClickListener.onMenuClick(v, mPosition);
+                    }
+                });
+            }
         }
 
         if(mRightMenuView == null && mRightMenuViewId != View.NO_ID) {
             mRightMenuView = this.findViewById(mRightMenuViewId);
+
+            if(mRightMenuView != null) {
+                mRightMenuView.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mOnMenuClickListener != null)
+                            mOnMenuClickListener.onMenuClick(v, mPosition);
+                    }
+                });
+            }
         }
 
         if(mContextView == null && mContextViewId != View.NO_ID)
@@ -180,10 +200,8 @@ public class SwipeMenuLayout extends FrameLayout {
                 mSlideView = this;
                 if(dx > 0 && dx > mLeftMargin) {
                     dx = mLeftMargin;
-                    registerListener(mLeftMenuView);
                 } else if (dx < 0 && dx < -mRightMargin) {
                     dx = -mRightMargin;
-                    registerListener(mRightMenuView);
                 }
 
                 mContextView.layout(dx, 0, mContextView.getMeasuredWidth()+dx, mContextView.getMeasuredHeight());
@@ -201,7 +219,6 @@ public class SwipeMenuLayout extends FrameLayout {
                         mScroller.startScroll(dis, 0, -dis, 0, mScrollTime);
                     } else if(dis < mLeftMargin) {
                         mScroller.startScroll(dis, 0, mLeftMargin-dis, 0, mScrollTime);
-                        registerListener(mLeftMenuView);
                     }
 
                     postInvalidate();
@@ -210,7 +227,6 @@ public class SwipeMenuLayout extends FrameLayout {
                         mScroller.startScroll(dis, 0, -dis, 0, mScrollTime);  //close
                     } else if(dis > -mRightMargin) {
                         mScroller.startScroll(dis, 0, -mRightMargin-dis, 0, mScrollTime);
-                        registerListener(mRightMenuView);
                     }
 
                     postInvalidate();
@@ -229,8 +245,8 @@ public class SwipeMenuLayout extends FrameLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        if(mAutoMenu)
-            initView();
+
+        initView();
         menuViewHide();
     }
 
@@ -263,39 +279,16 @@ public class SwipeMenuLayout extends FrameLayout {
         }
         layoutContextView(0);
         menuViewHide();
-        unregisterListener();
     }
 
-    private void registerListener(View view) {
-        if(view != null ) {
-            view.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(mOnMenuClickListener != null)
-                        mOnMenuClickListener.onMenuClick(v, mPosition);
-                }
-            });
-        }
-    }
-
-    private void unregisterListener() {
-        if(mLeftMenuView != null ) {
-            mLeftMenuView.setOnClickListener(null);
-        }
-
-        if(mRightMenuView != null ) {
-            mRightMenuView.setOnClickListener(null);
-        }
-    }
-    public static interface OnMenuClickListener {
+    public interface OnMenuClickListener {
 
         void onMenuClick(View v, int position);
     }
 
     public static void clearSideView() {
         if (mSlideView != null) {
-            mSlideView.unregisterListener();
+            mSlideView = null;
         }
-        mSlideView = null;
     }
 }
