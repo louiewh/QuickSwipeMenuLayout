@@ -37,6 +37,7 @@ public class SwipeMenuLayout extends FrameLayout {
     private int mScrollTime;
     private boolean mAutoMenu;
     private boolean mMenuShow;
+    private boolean mResterListener;
 
     private ScrollerCompat  mScroller;
     private OnMenuClickListener  mOnMenuClickListener;
@@ -85,30 +86,10 @@ public class SwipeMenuLayout extends FrameLayout {
 
         if(mLeftMenuView == null && mLeftMenuViewId != View.NO_ID) {
             mLeftMenuView = this.findViewById(mLeftMenuViewId);
-
-            if(mLeftMenuView != null) {
-                mLeftMenuView.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (mOnMenuClickListener != null)
-                            mOnMenuClickListener.onMenuClick(v, mPosition);
-                    }
-                });
-            }
         }
 
         if(mRightMenuView == null && mRightMenuViewId != View.NO_ID) {
             mRightMenuView = this.findViewById(mRightMenuViewId);
-
-            if(mRightMenuView != null) {
-                mRightMenuView.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (mOnMenuClickListener != null)
-                            mOnMenuClickListener.onMenuClick(v, mPosition);
-                    }
-                });
-            }
         }
 
         if(mContextView == null && mContextViewId != View.NO_ID)
@@ -116,12 +97,12 @@ public class SwipeMenuLayout extends FrameLayout {
 
     }
 
-    private void menuViewShow() {
-        if(mLeftMenuView != null ) {
+    private void menuViewShow(int dis) {
+        if(mLeftMenuView != null && dis > 0) {
             mLeftMenuView.setVisibility(View.VISIBLE);
         }
 
-        if(mRightMenuView != null) {
+        if(mRightMenuView != null && dis < 0) {
             mRightMenuView.setVisibility(View.VISIBLE);
         }
 
@@ -177,7 +158,7 @@ public class SwipeMenuLayout extends FrameLayout {
                     break;
 
                 if(!mMenuShow ) {
-                    menuViewShow();
+                    menuViewShow(dx);
                     getParent().requestDisallowInterceptTouchEvent(true);
                 }
 
@@ -192,7 +173,8 @@ public class SwipeMenuLayout extends FrameLayout {
                     dx = -mRightMargin;
                 }
 
-                mContextView.layout(dx, 0, mContextView.getMeasuredWidth()+dx, mContextView.getMeasuredHeight());
+                layoutContextView(dx);
+//                mContextView.layout(dx, 0, mContextView.getMeasuredWidth()+dx, mContextView.getMeasuredHeight());
                 return super.onTouchEvent(event);
             case MotionEvent.ACTION_CANCEL:
                 Log.d(TAG, "Event ACTION_CANCEL! mMenuShow:" + mMenuShow);
@@ -251,6 +233,14 @@ public class SwipeMenuLayout extends FrameLayout {
     private void layoutContextView(int dx) {
         if(mContextView != null)
             mContextView.layout(dx, 0, mContextView.getMeasuredWidth()+dx, mContextView.getMeasuredHeight());
+
+        if(!mResterListener && (dx == mLeftMargin || dx == -mRightMargin)) {
+            Log.d(TAG, "registerListener dx:" + dx);
+            registerListener(dx);
+        } else if (mResterListener && (dx ==0 || (dx > 0 && dx != mLeftMargin ) || (dx < 0 && dx != -mRightMargin))) {
+            Log.d(TAG, "unregisterListener dx:" + dx);
+            unregisterListener(dx);
+        }
     }
 
     public boolean isMenuOpen() {
@@ -272,6 +262,42 @@ public class SwipeMenuLayout extends FrameLayout {
     public interface OnMenuClickListener {
 
         void onMenuClick(View v, int position);
+    }
+
+    private void  registerListener(int dis) {
+        if(mLeftMenuView != null && dis == mLeftMargin) {
+            mLeftMenuView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mOnMenuClickListener != null)
+                        mOnMenuClickListener.onMenuClick(v, mPosition);
+                }
+            });
+        }
+
+        if(mRightMenuView != null && dis == -mRightMargin) {
+            mRightMenuView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mOnMenuClickListener != null)
+                        mOnMenuClickListener.onMenuClick(v, mPosition);
+                }
+            });
+        }
+
+        mResterListener = true;
+    }
+
+    private void unregisterListener(int dis) {
+        if(mLeftMenuView != null && dis > 0) {
+            mLeftMenuView.setOnClickListener(null);
+        }
+
+        if(mRightMenuView != null && dis < 0) {
+            mRightMenuView.setOnClickListener(null);
+        }
+
+        mResterListener = false;
     }
 
     public static void clearSideView() {
