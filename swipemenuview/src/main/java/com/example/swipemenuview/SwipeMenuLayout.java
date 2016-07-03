@@ -174,7 +174,6 @@ public class SwipeMenuLayout extends FrameLayout {
                 }
 
                 layoutContextView(dx);
-//                mContextView.layout(dx, 0, mContextView.getMeasuredWidth()+dx, mContextView.getMeasuredHeight());
                 return super.onTouchEvent(event);
             case MotionEvent.ACTION_CANCEL:
                 Log.d(TAG, "Event ACTION_CANCEL! mMenuShow:" + mMenuShow);
