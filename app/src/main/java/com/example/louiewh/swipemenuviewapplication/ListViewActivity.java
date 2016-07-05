@@ -1,10 +1,13 @@
 package com.example.louiewh.swipemenuviewapplication;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -32,6 +35,15 @@ public class ListViewActivity extends AppCompatActivity implements SwipeMenuLayo
 
         mAdapter = new AppAdapter();
         mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("SwipeMenuLayout", "SwipeMenuLayout onItemClick");
+                mAdapter.getItem(position);
+                Intent intent = new Intent(mAdapter.getItem(position).className);
+                getApplicationContext().startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -58,6 +70,15 @@ public class ListViewActivity extends AppCompatActivity implements SwipeMenuLayo
                 break;
             default:
                 break;
+        }
+    }
+
+    @Override
+    public void onItemClick(View v, int position) {
+        Log.d("SwipeMenuLayout", "onItemClick onItemClick");
+        Intent mainIntent = getPackageManager().getLaunchIntentForPackage( mAdapter.getItem(position).packageName);
+        if(mainIntent != null) {
+            startActivity(mainIntent);
         }
     }
 

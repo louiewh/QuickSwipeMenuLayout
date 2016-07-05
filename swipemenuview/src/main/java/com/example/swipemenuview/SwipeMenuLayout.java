@@ -95,6 +95,15 @@ public class SwipeMenuLayout extends FrameLayout {
         if(mContextView == null && mContextViewId != View.NO_ID)
             mContextView = this.findViewById(mContextViewId);
 
+        this.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mOnMenuClickListener != null) {
+                    mOnMenuClickListener.onItemClick(v, mPosition);
+                }
+            }
+        });
+
     }
 
     private void menuViewShow(int dis) {
@@ -133,7 +142,6 @@ public class SwipeMenuLayout extends FrameLayout {
         return mPosition;
     }
 
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch(event.getAction()){
@@ -146,10 +154,12 @@ public class SwipeMenuLayout extends FrameLayout {
                 if(mRightMenuView != null)
                     mRightMargin = mRightMenuView.getWidth();
 
-                if(mSlideView != null && this != mSlideView && mSlideView.isMenuOpen())
+                if(mSlideView != null && this != mSlideView && mSlideView.isMenuOpen()) {
                     mSlideView.closeMenu();
-
-                Log.d(TAG, "Event ACTION_DOWN! mMenuShow:" + mMenuShow);
+                    event.setAction(MotionEvent.ACTION_CANCEL);
+                }
+                
+                Log.d(TAG, "Event ACTION_DOWN mMenuShow:" + mMenuShow);
                 super.onTouchEvent(event);
                 return true;
             case MotionEvent.ACTION_MOVE:
@@ -160,13 +170,13 @@ public class SwipeMenuLayout extends FrameLayout {
                 if(!mMenuShow ) {
                     menuViewShow(dx);
                     getParent().requestDisallowInterceptTouchEvent(true);
+                    mSlideView = this;
                 }
 
                 if(dx > 0 && mLeftMenuView == null) break;
                 if(dx < 0 && mRightMenuView == null) break;
 
 
-                mSlideView = this;
                 if(dx > 0 && dx > mLeftMargin) {
                     dx = mLeftMargin;
                 } else if (dx < 0 && dx < -mRightMargin) {
@@ -174,9 +184,13 @@ public class SwipeMenuLayout extends FrameLayout {
                 }
 
                 layoutContextView(dx);
+
+                if(mMenuShow)
+                    event.setAction(MotionEvent.ACTION_CANCEL);
+
                 return super.onTouchEvent(event);
             case MotionEvent.ACTION_CANCEL:
-                Log.d(TAG, "Event ACTION_CANCEL! mMenuShow:" + mMenuShow);
+                Log.d(TAG, "Event ACTION_CANCEL mMenuShow:" + mMenuShow);
             case MotionEvent.ACTION_UP:
                 int dis = mContextView.getLeft();
                 /**
@@ -202,7 +216,9 @@ public class SwipeMenuLayout extends FrameLayout {
                 }
 
                 mDownX = 0;
-                Log.d(TAG, "Event ACTION_UP! mMenuShow:" + mMenuShow);
+                Log.d(TAG, "Event ACTION_UP mMenuShow:" + mMenuShow);
+                if(mMenuShow)
+                    event.setAction(MotionEvent.ACTION_CANCEL);
                 return super.onTouchEvent(event);
             default:
                 return super.onTouchEvent(event);
@@ -258,11 +274,6 @@ public class SwipeMenuLayout extends FrameLayout {
         menuViewHide();
     }
 
-    public interface OnMenuClickListener {
-
-        void onMenuClick(View v, int position);
-    }
-
     private void  registerListener(int dis) {
         if(mLeftMenuView != null && dis == mLeftMargin) {
             mLeftMenuView.setOnClickListener(new OnClickListener() {
@@ -303,5 +314,12 @@ public class SwipeMenuLayout extends FrameLayout {
         if (mSlideView != null) {
             mSlideView = null;
         }
+    }
+
+    public interface OnMenuClickListener {
+
+        void onMenuClick(View v, int position);
+
+        void onItemClick(View v, int position);
     }
 }
