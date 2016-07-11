@@ -171,6 +171,12 @@ public class SwipeMenuLayout extends FrameLayout {
                     menuViewShow(dx);
                     getParent().requestDisallowInterceptTouchEvent(true);
                     mSlideView = this;
+                } else if (mMenuShow && dx > 0 && mLeftMenuView.getVisibility() == View.INVISIBLE) {
+                    menuViewHide();
+                    menuViewShow(dx);
+                } else if (mMenuShow && dx < 0 && mRightMenuView.getVisibility() == View.INVISIBLE) {
+                    menuViewHide();
+                    menuViewShow(dx);
                 }
 
                 if(dx > 0 && mLeftMenuView == null) break;
@@ -184,7 +190,7 @@ public class SwipeMenuLayout extends FrameLayout {
                 }
 
                 layoutContextView(dx);
-
+                Log.d(TAG, "Event ACTION_MOVE mMenuShow:" + mMenuShow + " dx" + dx);
                 if(mMenuShow)
                     event.setAction(MotionEvent.ACTION_CANCEL);
 
@@ -252,7 +258,7 @@ public class SwipeMenuLayout extends FrameLayout {
         if(!mResterListener && (dx == mLeftMargin || dx == -mRightMargin)) {
             Log.d(TAG, "registerListener dx:" + dx);
             registerListener(dx);
-        } else if (mResterListener && (dx ==0 || (dx > 0 && dx != mLeftMargin ) || (dx < 0 && dx != -mRightMargin))) {
+        } else if (mResterListener && dx == 0) {
             Log.d(TAG, "unregisterListener dx:" + dx);
             unregisterListener(dx);
         }
