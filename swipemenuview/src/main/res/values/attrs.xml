@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="SwipeMenuLayout">
-        <attr name="duration" format="integer"/>
-        <attr name="auto_menu" format="boolean"/>
+        <attr name="swipe_scroll_duration"  format="integer"/>
+        <attr name="swipe_menu_left_id"     format="reference"/>
+        <attr name="swipe_menu_right_id"    format="reference"/>
+        <attr name="swipe_context_id"       format="reference"/>
     </declare-styleable>
-
 </resources>
