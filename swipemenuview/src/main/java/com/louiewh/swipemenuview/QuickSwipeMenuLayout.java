@@ -15,7 +15,7 @@ import android.widget.FrameLayout;
  * Created by louiewh on 16/6/16.
  */
 public class QuickSwipeMenuLayout extends FrameLayout {
-    public final static String TAG = "SwipeMenuLayout";
+    public final static String TAG = "QuickSwipeMenuLayout";
 
     private View mMenuLeftView;
     private View mMenuRightView;
@@ -34,6 +34,7 @@ public class QuickSwipeMenuLayout extends FrameLayout {
     private int mScrollTime = 500;
 
     private ScrollerCompat  mScroller;
+    private static QuickSwipeMenuLayout sOpenQuickSwipeMenuLayout;
 
     public QuickSwipeMenuLayout(Context context) {
         super(context);
@@ -135,6 +136,15 @@ public class QuickSwipeMenuLayout extends FrameLayout {
         switch(event.getAction()){
             case MotionEvent.ACTION_DOWN:
 
+                if(sOpenQuickSwipeMenuLayout != null && sOpenQuickSwipeMenuLayout != this){
+                    sOpenQuickSwipeMenuLayout.closeMenu();
+                    sOpenQuickSwipeMenuLayout = this;
+                }
+
+                if(sOpenQuickSwipeMenuLayout == null){
+                    sOpenQuickSwipeMenuLayout = this;
+                }
+
                 super.onTouchEvent(event);
                 return true;
             case MotionEvent.ACTION_MOVE:
@@ -172,6 +182,7 @@ public class QuickSwipeMenuLayout extends FrameLayout {
                    dis < 0, move to left, dis > -mRightMargin/2, close menu, dis > -mRightMargin, open menu
                  */
                 if(dis > 0 && mMenuLeftView != null) {
+
                     if(dis < mLeftMargin/2) {
                         mScroller.startScroll(dis, 0, -dis, 0, mScrollTime);
                     } else if(dis < mLeftMargin) {
@@ -180,6 +191,7 @@ public class QuickSwipeMenuLayout extends FrameLayout {
 
                     postInvalidate();
                 } else if(dis < 0 && mMenuRightView != null) {
+
                     if(dis > -mRightMargin/2) {
                         mScroller.startScroll(dis, 0, -dis, 0, mScrollTime);  //close
                     } else if(dis > -mRightMargin) {
@@ -231,11 +243,37 @@ public class QuickSwipeMenuLayout extends FrameLayout {
         }
     }
 
+    public void closeMenu(){
+        if(mContextView != null ){
+
+            if(mScroller.computeScrollOffset()){
+                mScroller.abortAnimation();
+            }
+
+            int left = mContextView.getLeft();
+            mScroller.startScroll(left, 0, -left, 0, mScrollTime);
+
+            postInvalidate();
+        }
+    }
 
     private RectF getViewScreenCoordinate(View view) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
         return new RectF(location[0], location[1], location[0] + view.getWidth(),
                 location[1] + view.getHeight());
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if(sOpenQuickSwipeMenuLayout != null){
+            sOpenQuickSwipeMenuLayout = null;
+        }
     }
 }
