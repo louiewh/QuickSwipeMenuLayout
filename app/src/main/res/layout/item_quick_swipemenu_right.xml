@@ -20,7 +20,6 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:layout_gravity="end"
         android:id="@+id/swipe_right_menu">
         <ImageView
             android:id="@+id/discard"

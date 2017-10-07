@@ -6,6 +6,7 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.support.v4.widget.ScrollerCompat;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -69,10 +70,16 @@ public class QuickSwipeMenuLayout extends FrameLayout {
 
         if(mMenuLeftView == null && mIdMenuLeft != View.NO_ID) {
             mMenuLeftView = this.findViewById(mIdMenuLeft);
+
+            FrameLayout.LayoutParams layoutParams = (LayoutParams) mMenuLeftView.getLayoutParams();
+            layoutParams.gravity = Gravity.START;
         }
 
         if(mMenuRightView == null && mIdMenuRight != View.NO_ID) {
             mMenuRightView = this.findViewById(mIdMenuRight);
+
+            FrameLayout.LayoutParams layoutParams = (LayoutParams) mMenuRightView.getLayoutParams();
+            layoutParams.gravity = Gravity.END;
         }
 
         if(mContextView == null && mIdContext != View.NO_ID) {
@@ -265,6 +272,30 @@ public class QuickSwipeMenuLayout extends FrameLayout {
         return new RectF(location[0], location[1], location[0] + view.getWidth(),
                 location[1] + view.getHeight());
     }
+
+//    @Override
+//    public void onViewAdded(View child) {
+//        super.onViewAdded(child);
+//
+//            if(mMenuLeftView == null && mIdMenuLeft == child.getId()) {
+//                mMenuLeftView = this.findViewById(mIdMenuLeft);
+//
+//                FrameLayout.LayoutParams layoutParams = (LayoutParams) mMenuLeftView.getLayoutParams();
+//                layoutParams.gravity = Gravity.START;
+//            }
+//
+//            if(mMenuRightView == null && mIdMenuRight == child.getId()) {
+//                mMenuRightView = this.findViewById(mIdMenuRight);
+//
+//                FrameLayout.LayoutParams layoutParams = (LayoutParams) mMenuLeftView.getLayoutParams();
+//                layoutParams.gravity = Gravity.END;
+//            }
+//
+//            if(mContextView == null && mIdContext != child.getId()) {
+//                mContextView = this.findViewById(mIdContext);
+//                this.bringChildToFront(mContextView);
+//            }
+//    }
 
     @Override
     protected void onAttachedToWindow() {

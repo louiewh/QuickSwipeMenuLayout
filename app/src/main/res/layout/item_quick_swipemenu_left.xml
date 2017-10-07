@@ -12,7 +12,6 @@
         android:id="@+id/swipe_left_menu"
         android:layout_width="80dp"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
         android:background="@color/colorAccent"
         android:src="@mipmap/ic_action_favorite"/>
 
