@@ -99,7 +99,9 @@ public class QuickSwipeMenuLayout extends FrameLayout {
         switch(event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mDownX = event.getX();
-                mInitLeft = mContextView.getLeft();
+                if(mContextView != null) {
+                    mInitLeft = mContextView.getLeft();
+                }
 
                 if(mInitLeft > 0 && mInitLeft == mLeftMargin){
                     if(mMenuRightView != null) {
